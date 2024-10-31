@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Title from "./Title";
 import axios from "axios";
 import RecordMessage from "./RecordMessage";
@@ -6,66 +6,54 @@ import RecordMessage from "./RecordMessage";
 const Controller = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
-  const [apiStatus, setApiStatus] = useState<string>("");
-  
-  const apiUrl = "https://sasha-ai-3771e0eaa1d7.herokuapp.com";
 
-  // Function to create a blob URL from binary data
   function createBlobURL(data: any) {
     const blob = new Blob([data], { type: "audio/mpeg" });
     const url = window.URL.createObjectURL(blob);
     return url;
   }
 
-  // Fetch API health status on component mount
-  useEffect(() => {
-    const checkApiHealth = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/health`);
-        setApiStatus(response.data.response); // Update status with API response
-      } catch (error) {
-        console.error("Error checking API health:", error);
-        setApiStatus("API is down");
-      }
-    };
-
-    checkApiHealth();
-  }, []);
-
-  // Handle stopping the recording
   const handleStop = async (blobUrl: string) => {
     setIsLoading(true);
+
+    // Append recorded message to messages
     const myMessage = { sender: "me", blobUrl };
     const messagesArr = [...messages, myMessage];
 
-    // Convert blob URL to blob object
+    // convert blob url to blob object
     fetch(blobUrl)
       .then((res) => res.blob())
       .then(async (blob) => {
-        // Construct form data to send to the API
+        // Construct audio to send file
         const formData = new FormData();
         formData.append("file", blob, "myFile.wav");
 
-        // Send form data to the Heroku API
-        try {
-          const response = await axios.post(`${apiUrl}/post-audio/`, formData, {
+        // send form data to api endpoint
+        await axios
+          .post("http://localhost:8000/post-audio", formData, {
             headers: {
               "Content-Type": "audio/mpeg",
             },
             responseType: "arraybuffer", // Set the response type to handle binary data
-          });
+          })
+          .then((res: any) => {
+            const blob = res.data;
+            const audio = new Audio();
+            audio.src = createBlobURL(blob);
 
-          const audio = new Audio();
-          audio.src = URL.createObjectURL(new Blob([response.data], { type: 'audio/mpeg' }));
-          const sashaMessage = { sender: "sasha", blobUrl: audio.src };
-          messagesArr.push(sashaMessage);
-          setMessages(messagesArr);
-          audio.play();
-        } catch (error) {
-          console.error("Error posting audio:", error);
-        } finally {
-          setIsLoading(false);
-        }
+            // Append to audio
+            const sashaMessage = { sender: "sasha", blobUrl: audio.src };
+            messagesArr.push(sashaMessage);
+            setMessages(messagesArr);
+
+            // Play audio
+            setIsLoading(false);
+            audio.play();
+          })
+          .catch((err: any) => {
+            console.error(err);
+            setIsLoading(false);
+          });
       });
   };
 
@@ -75,9 +63,6 @@ const Controller = () => {
       <Title setMessages={setMessages} />
 
       <div className="flex flex-col justify-between h-full overflow-y-scroll pb-96">
-        {/* API Status */}
-        <h1 className="text-center mt-4">API Status: {apiStatus}</h1>
-
         {/* Conversation */}
         <div className="mt-5 px-5">
           {messages?.map((audio, index) => {
@@ -86,14 +71,14 @@ const Controller = () => {
                 key={index + audio.sender}
                 className={
                   "flex flex-col " +
-                  (audio.sender === "sasha" ? "flex items-end" : "")
+                  (audio.sender == "sasha" && "flex items-end")
                 }
               >
                 {/* Sender */}
                 <div className="mt-4 ">
                   <p
                     className={
-                      audio.sender === "sasha"
+                      audio.sender == "sasha"
                         ? "text-right mr-2 italic text-green-500"
                         : "ml-2 italic text-blue-500"
                     }
@@ -112,7 +97,7 @@ const Controller = () => {
             );
           })}
 
-          {messages.length === 0 && !isLoading && (
+          {messages.length == 0 && !isLoading && (
             <div className="text-center font-light italic mt-10">
               Send Sasha a message so she can Help You...
             </div>
