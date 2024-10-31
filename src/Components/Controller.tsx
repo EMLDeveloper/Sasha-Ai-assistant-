@@ -99,19 +99,19 @@ const Controller = () => {
 
           {messages.length == 0 && !isLoading && (
             <div className="text-center font-light italic mt-10">
-              Send Sasha a message...
+              Send Sasha a message so she can Help You...
             </div>
           )}
 
           {isLoading && (
             <div className="text-center font-light italic mt-10 animate-pulse">
-              Gimme a few seconds...
+              Gimme a few seconds..
             </div>
           )}
         </div>
 
         {/* Recorder */}
-        <div className="fixed bottom-0 w-full py-6 border-t text-center bg-gradient-to-r from-red-900 to-blue-900">
+        <div className="fixed bottom-0 w-full py-6 border-t text-center bg-gradient-to-r from-red-800 to-blue-900">
           <div className="flex justify-center items-center w-full">
             <div>
               <RecordMessage handleStop={handleStop} />
