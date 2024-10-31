@@ -7,7 +7,7 @@ const Controller = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const [apiStatus, setApiStatus] = useState<string>("");
-  
+
   const apiUrl = "https://sasha-ai-3771e0eaa1d7.herokuapp.com";
 
   // Function to create a blob URL from binary data
@@ -21,11 +21,11 @@ const Controller = () => {
   useEffect(() => {
     const checkApiHealth = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/health`);
+        const response = await axios.get(`${apiUrl}/health`); // Updated endpoint
         setApiStatus(response.data.response); // Update status with API response
       } catch (error) {
-        console.error("Error checking API health:", error);
-        setApiStatus("API is down");
+        console.error("Error checking API audio:", error);
+        setApiStatus("Currently Down");
       }
     };
 
@@ -50,7 +50,7 @@ const Controller = () => {
         try {
           const response = await axios.post(`${apiUrl}/post-audio/`, formData, {
             headers: {
-              "Content-Type": "audio/mpeg",
+              "Content-Type": "multipart/form-data", // Changed to multipart/form-data
             },
             responseType: "arraybuffer", // Set the response type to handle binary data
           });
