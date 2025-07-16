@@ -1,3 +1,10 @@
+# Under the Hood of Sasha:
+# Meet Your AI Assistant:
+Sasha AI is a versatile virtual assistant built to adapt to roles like interviewer, educator, and sales assistant. Utilizing OpenAI’s conversational intelligence, Sasha AI provides insightful and natural responses, making interactions feel engaging and personalized. The assistant’s voice capabilities are powered by Eleven Labs, delivering high-quality, lifelike audio that enhances the user experience. Built with Python and FastAPI for robust backend performance, and React with Tailwind CSS for a seamless, responsive interface, Sasha AI brings reliable, real-time support across a range of professional settings
+
+<img width="1727" height="959" alt="Screenshot 2025-07-15 at 11 01 17 PM" src="https://github.com/user-attachments/assets/68fedd1c-cd08-4633-a14e-e3e86495dd97" />
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -30,6 +37,10 @@ export default tseslint.config({
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
 ```js
+
+
+
+
 // eslint.config.js
 import react from 'eslint-plugin-react'
 
